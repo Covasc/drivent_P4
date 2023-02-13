@@ -12,8 +12,32 @@ async function findByUserId ( userId: number ) {
     })
 }
 
+async function create ({ roomId, userId }: CreateParams): Promise<Booking> {
+    return prisma.booking.create({
+        data: {
+            roomId, 
+            userId,
+        }
+    })
+}
+
+type CreateParams = Omit < Booking, "id" | "createdAt" | "updatedAt">
+
+async function findByRoomId(roomId: number) {
+    return prisma.booking.findMany({
+        where: {
+            roomId,
+        },
+        include: {
+            Room: true,
+        }
+    });
+}
+
 const bookingRepository = {
-    findByUserId
+    findByUserId,
+    create,
+    findByRoomId
 }
 
 export default bookingRepository;
