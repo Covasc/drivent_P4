@@ -34,10 +34,28 @@ async function findByRoomId(roomId: number) {
     });
 }
 
+type UpdateParams = Omit <Booking, "createdAt" | "updatedAt">
+
+async function upsertBooking({id, roomId, userId}: UpdateParams) {
+    return prisma.booking.upsert({
+        where: {
+            id
+        },
+        create: {
+            roomId,
+            userId
+        },
+        update: {
+            roomId
+        }
+    })
+}
+
 const bookingRepository = {
     findByUserId,
     create,
-    findByRoomId
+    findByRoomId,
+    upsertBooking
 }
 
 export default bookingRepository;
